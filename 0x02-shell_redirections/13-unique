@@ -1,2 +1,2 @@
-#!/bin/bash 
-cat list | sort |uniq -u | fmt -w 1
+#!/bin/bash
+uniq -u | sort | xargs -m -1
