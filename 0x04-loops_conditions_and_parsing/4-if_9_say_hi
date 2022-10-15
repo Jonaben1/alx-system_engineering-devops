@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Printing "Best School" 10 times and on the 9th iteration also print "Hi" 
+
 i=0
 while [ $i -le 10 ];
 do
