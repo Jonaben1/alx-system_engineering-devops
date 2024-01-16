@@ -1,32 +1,16 @@
-#!/usr/bin/python
-"""
-Reddit API - How many subs?
-"""
-
+#!/usr/bin/python3
+"""Function to query subscribers on a given Reddit subreddit."""
 import requests
 
+
 def number_of_subscribers(subreddit):
-    """
-    Retrieves the number of subscribers for a given subreddit
-
-    Args:
-        subreddit (str): The subreddit name
-
-    Returns:
-        int: The number of subscribers, or 0 if the aubreddit is invalid.
-    """
-    url = f'https://www.reddit.com/r/{subreddit}/about.json'
+    """Return the total number of subscribers on a given subreddit."""
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
     headers = {
-        'User-Agent': 'Termux:0x16.api-avanced (by Jonaben)'
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
     }
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise HTTPError for bad responses
-
-        data = response.json()
-        subscribers = data['data']['subscribers']
-        return subscribers
-    except requests.RequestException as e:
-        print(f"Error: {e}")
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    if response.status_code == 404:
         return 0
-
+    results = response.json().get("data")
+    return results.get("subscribers")
