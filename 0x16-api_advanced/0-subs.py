@@ -19,9 +19,14 @@ def number_of_subscribers(subreddit):
     headers = {
         'User-Agent': 'Termux:0x16.api-avanced (by Jonaben)'
     }
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    if response.status_code == 404:
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise HTTPError for bad responses
+
+        data = response.json()
+        subscribers = data['data']['subscribers']
+        return subscribers
+    except requests.RequestException as e:
+        print(f"Error: {e}")
         return 0
-    results = response.json().get("data")
-    return results.get("subscribers")
 
