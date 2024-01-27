@@ -1,31 +1,13 @@
-# Puppet manifest to optimize Nginx configuration for handling ApacheBench load
+# Increases the amount of traffic an Nginx server can handle.
 
-# Define class for Nginx configuration
-class nginx_config {
+# Increase the ULIMIT of the default file
+exec { 'fix--for-nginx':
+  command => 'sed -i "s/15/4096/" /etc/default/nginx',
+  path    => '/usr/local/bin/:/bin/'
+} ->
 
-    # Ensure Nginx package is installed
-    package { 'nginx':
-        ensure => installed,
-    }
-
-    # Configure Nginx settings
-    file { '/etc/nginx/nginx.conf':
-        ensure  => file,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        content => template('nginx/nginx.conf.erb'), # Use ERB template for configuration
-        require => Package['nginx'],
-        notify  => Service['nginx'],
-    }
-
-    # Ensure Nginx service is running
-    service { 'nginx':
-        ensure  => running,
-        enable  => true,
-        require => Package['nginx'],
-    }
+# Restart Nginx
+exec { 'nginx-restart':
+  command => 'nginx restart',
+  path    => '/etc/init.d/'
 }
-
-# Include Nginx configuration class
-include nginx_config

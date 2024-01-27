@@ -1,23 +1,13 @@
-# Puppet manifest to configure OS settings for user "holberton"
+# Enable the user holberton to login and open files without error.
 
-# Ensure the holberton user exists
-user { 'holberton':
-  ensure => present,
+# Increase hard file limit for Holberton user.
+exec { 'increase-hard-file-limit-for-holberton-user':
+  command => 'sed -i "/holberton hard/s/5/50000/" /etc/security/limits.conf',
+  path    => '/usr/local/bin/:/bin/'
 }
 
-# Allow the holberton user to log in
-file { '/etc/ssh/sshd_config':
-  ensure  => file,
-  owner   => 'root',
-  group   => 'root',
-  mode    => '0644',
-  content => template('ssh/sshd_config.erb'), # You need to create an ERB template for sshd_config
-  notify  => Service['ssh'],
-}
-
-# Ensure SSH service is running and enabled
-service { 'ssh':
-  ensure  => running,
-  enable  => true,
-  require => File['/etc/ssh/sshd_config'],
+# Increase soft file limit for Holberton user.
+exec { 'increase-soft-file-limit-for-holberton-user':
+  command => 'sed -i "/holberton soft/s/4/50000/" /etc/security/limits.conf',
+  path    => '/usr/local/bin/:/bin/'
 }
